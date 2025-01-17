@@ -19,3 +19,7 @@ jobs:
           sparse-checkout: |
             ModelBuild-GitHubPipeline/
           sparse-checkout-cone-mode: true # Recommended for better performance
+      - name: List Files
+        run: |
+          echo "Files in the specific directory:"
+  
