@@ -22,4 +22,5 @@ jobs:
       - name: List Files
         run: |
           echo "Files in the specific directory:"
+          ls -lrta
   
