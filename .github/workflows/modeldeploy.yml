@@ -1,1 +1,78 @@
-- name : SagemakerDeploy Pipeline
+name: Sagemaker Deploy Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SAGEMAKER_PROJECT_NAME: githubProj
+  SAGEMAKER_PROJECT_NAME_ID: p-1succyhht0ye
+  SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
+  AWS_REGION: us-east-1
+  ARTIFACT_BUCKET: sagemaker-project-p-98gc52dh9vwy
+  
+
+jobs:
+  SagemakerModelBuild:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Sagemaker Deploy CheckOut
+        uses: actions/checkout@v4
+        with:
+          repository: DevOps-ManiInspire/sagemaker-model-build # Replace with the owner/repository name
+          fetch-depth: 0 # Fetch all history for proper sparse checkout
+          sparse-checkout-cone-mode: true # Recommended for better performance
+      - name: Build and Install
+        run: |
+          mkdir /opt/Recommender-Live-Deploy
+          mv ./ModelBuild-GitHubPipeline/Deploy/* /opt/Recommender-Live-Deploy
+          pip3 install --upgrade --force-reinstall "botocore>1.21.30" "boto3>1.18.30" "awscli>1.20.30"
+          ls -lrt $HOME/.local/
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }} # Replace with your AWS Region
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # Add in repository secrets
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Add in repository secrets
+          
+      - name: Verify AWS Configuration
+        run: aws sts get-caller-identity
+
+      - name: Build Model with SageMaker
+        run: |
+          python3 build.py --model-execution-role "${{ secrets.MODEL_EXECUTION_ROLE_ARN }}" \
+                     --model-package-group-name "${{ secrets.SOURCE_MODEL_PACKAGE_GROUP_NAME }}" \
+                     --sagemaker-project-id "${{ secrets.SAGEMAKER_PROJECT_ID }}" \
+                     --sagemaker-project-name "${{ secrets.SAGEMAKER_PROJECT_NAME }}" \
+                     --s3-bucket "${{ secrets.ARTIFACT_BUCKET }}" \
+                     --export-cfn-params-tags "True"
+
+      - name: Package CloudFormation Template
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          aws cloudformation package --template endpoint-config-template.yml \
+                                     --s3-bucket "${{ secrets.ARTIFACT_BUCKET }}" \
+                                     --output-template "${{ secrets.EXPORT_TEMPLATE_NAME }}"
+          cat $EXPORT_TEMPLATE_STAGING_CONFIG
+          cat $EXPORT_TEMPLATE_PROD_CONFIG
+
+      - name: Deploy CloudFormation Stack
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        with:
+          name: ${{ env.STACK_NAME_DEPLOY_STAGING }}
+          template: ${{ env.EXPORT_TEMPLATE_NAME }}
+          capabilities: CAPABILITY_NAMED_IAM
+          parameter-overrides: |
+            file://${{ env.EXPORT_TEMPLATE_STAGING_PARAMS }}
+          tags: |
+            file://${{ env.EXPORT_TEMPLATE_STAGING_TAGS }}
+          no-fail-on-empty-changeset: '1'
+          timeout-in-minutes: 30
+
+
+
+
