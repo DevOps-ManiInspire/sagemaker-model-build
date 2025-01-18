@@ -6,6 +6,7 @@ on:
       - main
 
 env:
+  BASE_PATH: /opt/Recommender-Live-Deploy
   SAGEMAKER_PROJECT_NAME: githubProj
   SAGEMAKER_PROJECT_NAME_ID: p-1succyhht0ye
   SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
@@ -35,8 +36,8 @@ jobs:
           sparse-checkout-cone-mode: true # Recommended for better performance
       - name: Build and Install
         run: |
-          mkdir /opt/Recommender-Live-Deploy
-          mv ./ModelBuild-GitHubPipeline/deploy/* /opt/Recommender-Live-Deploy
+          mkdir ${{ env.BASE_PATH }}
+          mv ./ModelBuild-GitHubPipeline/deploy/* ${{ env.BASE_PATH }}
           pip3 install --upgrade --force-reinstall "botocore>1.21.30" "boto3>1.18.30" "awscli>1.20.30"
           ls -lrt $HOME/.local/
           
@@ -52,7 +53,7 @@ jobs:
 
       - name: Build Model with SageMaker
         run: |
-          cd /opt/Recommender-Live-Deploy
+          cd ${{ env.BASE_PATH }}
           python3 build.py --model-execution-role "${{ env.MODEL_EXECUTION_ROLE_ARN }}" \
                      --model-package-group-name "${{ env.SOURCE_MODEL_PACKAGE_GROUP_NAME }}" \
                      --sagemaker-project-id "${{ env.SAGEMAKER_PROJECT_ID }}" \
@@ -62,46 +63,46 @@ jobs:
 
       - name: Package CloudFormation Template
         run: |
-          cd /opt/Recommender-Live-Deploy
+          cd ${{ env.BASE_PATH }}
           export PATH="$HOME/.local/bin:$PATH"
           aws cloudformation package --template endpoint-config-template.yml \
                                      --s3-bucket "${{ env.ARTIFACT_BUCKET }}" \
                                      --output-template "${{ env.EXPORT_TEMPLATE_NAME }}"
           cat $EXPORT_TEMPLATE_STAGING_CONFIG
           cat $EXPORT_TEMPLATE_PROD_CONFIG
-          ls -lrt /opt/Recommender-Live-Deploy
+          ls -lrt ${{ env.BASE_PATH }}
 
       - name: Deploy Staging Cloudformation 
         uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-deploy-staging
-          template: /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_NAME }}
+          template: ${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_NAME }}
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: |
-            file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_PARAMS }}
+            file://${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_STAGING_PARAMS }}
           tags: |
-            file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_TAGS }}
+            file://${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_STAGING_TAGS }}
           no-fail-on-empty-changeset: '1'
           timeout-in-minutes: 30
 
       - name: Testing Sagemaker Build
         run: |
-          cd /opt/Recommender-Live-Deploy
+          cd ${{ env.BASE_PATH }}
           ls -lrt
           python3 test/test.py \
-              --import-build-config /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_CONFIG }} \
-              --export-test-results /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
-          cat /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
+              --import-build-config ${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_STAGING_CONFIG }} \
+              --export-test-results ${{ env.BASE_PATH }}/${{ env.EXPORT_TEST_RESULTS }}
+          cat ${{ env.BASE_PATH }}/${{ env.EXPORT_TEST_RESULTS }}
 
       - name: Deploy Production Cloudformation 
         uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
-            name: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-prod-staging
-            template: /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_NAME }}
+            name: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-deploy-prod
+            template: ${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_NAME }}
             capabilities: CAPABILITY_NAMED_IAM
             parameter-overrides: |
-                file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_PROD_PARAMS }}
+                file://${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_PROD_PARAMS }}
             tags: |
-                file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_PROD_TAGS }}
+                file://${{ env.BASE_PATH }}/${{ env.EXPORT_TEMPLATE_PROD_TAGS }}
             no-fail-on-empty-changeset: '1'
             timeout-in-minutes: 30
