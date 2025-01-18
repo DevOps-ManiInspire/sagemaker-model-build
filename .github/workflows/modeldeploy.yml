@@ -28,7 +28,7 @@ jobs:
       - name: Build and Install
         run: |
           mkdir /opt/Recommender-Live-Deploy
-          mv ./ModelBuild-GitHubPipeline/Deploy/* /opt/Recommender-Live-Deploy
+          mv ./ModelBuild-GitHubPipeline/deploy/* /opt/Recommender-Live-Deploy
           pip3 install --upgrade --force-reinstall "botocore>1.21.30" "boto3>1.18.30" "awscli>1.20.30"
           ls -lrt $HOME/.local/
           
