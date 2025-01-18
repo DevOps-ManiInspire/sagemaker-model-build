@@ -16,14 +16,12 @@ jobs:
         with:
           repository: DevOps-ManiInspire/sagemaker-model-build # Replace with the owner/repository name
           fetch-depth: 0 # Fetch all history for proper sparse checkout
-          sparse-checkout: |
-            ModelBuild-GitHubPipeline/
           sparse-checkout-cone-mode: true # Recommended for better performance
       - name: List Files
         run: |
           echo "Files in the specific directory:"
           mkdir /opt/Recommender-Live
-          mv ./ModelBuild-GitHubPipeline /opt/Recommender-Live
+          mv ./ModelBuild-GitHubPipeline/* /opt/Recommender-Live
           ls -lrta
           cd /opt/Recommender-Live
           ls -lrta
