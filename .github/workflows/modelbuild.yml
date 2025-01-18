@@ -23,7 +23,8 @@ jobs:
         run: |
           echo "Files in the specific directory:"
           mkdir /opt/Recommender-Live
-          mv ModelBuild-GitHubPipeline /opt/Recommender-Live
+          mv ./ModelBuild-GitHubPipeline /opt/Recommender-Live
+          ls -lrta
           cd /opt/Recommender-Live
           ls -lrta
   
