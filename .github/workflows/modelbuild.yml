@@ -10,7 +10,6 @@ env:
   SAGEMAKER_PROJECT_NAME_ID: p-1succyhht0ye
   SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
   AWS_REGION: us-east-1
-  AWS_CREDENTIAL: 
   ARTIFACT_BUCKET: sagemaker-project-p-98gc52dh9vwy
   
 
@@ -36,7 +35,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: ${{ AWS_REGION }} # Replace with your AWS Region
+          aws-region: ${{ env.AWS_REGION }} # Replace with your AWS Region
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # Add in repository secrets
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Add in repository secrets
           
