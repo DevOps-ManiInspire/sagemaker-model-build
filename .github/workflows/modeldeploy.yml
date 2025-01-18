@@ -17,6 +17,8 @@ env:
   EXPORT_TEMPLATE_STAGING_CONFIG: staging-config-export.json
   EXPORT_TEMPLATE_STAGING_PARAMS: staging-params-export.json
   EXPORT_TEMPLATE_STAGING_TAGS: staging-tags-export.json
+  EXPORT_TEMPLATE_PROD_PARAMS: prod-params-export.json
+  EXPORT_TEMPLATE_PROD_TAGS: prod-tags-export.json
   EXPORT_TEST_RESULTS: test-results.json
 
 jobs:
@@ -90,3 +92,16 @@ jobs:
               --import-build-config /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_CONFIG }} \
               --export-test-results /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
           cat /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
+
+      - name: Deploy Production Cloudformation 
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
+        with:
+            name: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-prod-staging
+            template: /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_NAME }}
+            capabilities: CAPABILITY_NAMED_IAM
+            parameter-overrides: |
+                file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_PROD_PARAMS }}
+            tags: |
+                file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_PROD_TAGS }}
+            no-fail-on-empty-changeset: '1'
+            timeout-in-minutes: 30
