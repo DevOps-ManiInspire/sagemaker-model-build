@@ -17,9 +17,10 @@ env:
   EXPORT_TEMPLATE_STAGING_CONFIG: staging-config-export.json
   EXPORT_TEMPLATE_STAGING_PARAMS: staging-params-export.json
   EXPORT_TEMPLATE_STAGING_TAGS: staging-tags-export.json
+  EXPORT_TEST_RESULTS: test-results.json
 
 jobs:
-  SagemakerModelBuild:
+  SagemakerModelDeploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -67,7 +68,7 @@ jobs:
           cat $EXPORT_TEMPLATE_STAGING_CONFIG
           cat $EXPORT_TEMPLATE_PROD_CONFIG
 
-      - name: Deploy CloudFormation Stack
+      - name: Deploy Staging Cloudformation 
         uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-deploy-staging
@@ -79,3 +80,11 @@ jobs:
             file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_TAGS }}
           no-fail-on-empty-changeset: '1'
           timeout-in-minutes: 30
+
+      - name: Build Model with SageMaker
+        run: |
+          cd /opt/Recommender-Live-Deploy
+          python3 test/test.py \
+              --import-build-config opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_CONFIG }} \
+              --export-test-results opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
+          cat opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
