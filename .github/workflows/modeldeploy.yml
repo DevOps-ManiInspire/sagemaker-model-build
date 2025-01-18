@@ -9,9 +9,15 @@ env:
   SAGEMAKER_PROJECT_NAME: githubProj
   SAGEMAKER_PROJECT_NAME_ID: p-1succyhht0ye
   SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
+  SOURCE_MODEL_PACKAGE_GROUP_NAME: p-1succyhht0ye
+  MODEL_EXECUTION_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
   AWS_REGION: us-east-1
   ARTIFACT_BUCKET: sagemaker-project-p-98gc52dh9vwy
-  
+  EXPORT_TEMPLATE_NAME: template-export.yml
+  EXPORT_TEMPLATE_STAGING_CONFIG: staging-config-export.json
+  EXPORT_TEMPLATE_STAGING_PARAMS: staging-params-export.json
+  EXPORT_TEMPLATE_STAGING_TAGS: staging-tags-export.json
+  STACK_NAME_DEPLOY_STAGING: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-deploy-staging
 
 jobs:
   SagemakerModelBuild:
@@ -44,19 +50,20 @@ jobs:
 
       - name: Build Model with SageMaker
         run: |
-          python3 build.py --model-execution-role "${{ secrets.MODEL_EXECUTION_ROLE_ARN }}" \
-                     --model-package-group-name "${{ secrets.SOURCE_MODEL_PACKAGE_GROUP_NAME }}" \
-                     --sagemaker-project-id "${{ secrets.SAGEMAKER_PROJECT_ID }}" \
-                     --sagemaker-project-name "${{ secrets.SAGEMAKER_PROJECT_NAME }}" \
-                     --s3-bucket "${{ secrets.ARTIFACT_BUCKET }}" \
+          cd /opt/Recommender-Live-Deploy
+          python3 build.py --model-execution-role "${{ env.MODEL_EXECUTION_ROLE_ARN }}" \
+                     --model-package-group-name "${{ env.SOURCE_MODEL_PACKAGE_GROUP_NAME }}" \
+                     --sagemaker-project-id "${{ env.SAGEMAKER_PROJECT_ID }}" \
+                     --sagemaker-project-name "${{ env.SAGEMAKER_PROJECT_NAME }}" \
+                     --s3-bucket "${{ env.ARTIFACT_BUCKET }}" \
                      --export-cfn-params-tags "True"
 
       - name: Package CloudFormation Template
         run: |
           export PATH="$HOME/.local/bin:$PATH"
           aws cloudformation package --template endpoint-config-template.yml \
-                                     --s3-bucket "${{ secrets.ARTIFACT_BUCKET }}" \
-                                     --output-template "${{ secrets.EXPORT_TEMPLATE_NAME }}"
+                                     --s3-bucket "${{ env.ARTIFACT_BUCKET }}" \
+                                     --output-template "${{ env.EXPORT_TEMPLATE_NAME }}"
           cat $EXPORT_TEMPLATE_STAGING_CONFIG
           cat $EXPORT_TEMPLATE_PROD_CONFIG
 
