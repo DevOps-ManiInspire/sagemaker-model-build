@@ -71,7 +71,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: sagemaker-${{ env.SAGEMAKER_PROJECT_NAME }}-${{ env.SAGEMAKER_PROJECT_NAME_ID }}-deploy-staging
-          template: ${{ env.EXPORT_TEMPLATE_NAME }}
+          template: /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_NAME }}
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: |
             file://${{ env.EXPORT_TEMPLATE_STAGING_PARAMS }}
