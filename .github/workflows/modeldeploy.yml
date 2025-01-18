@@ -87,6 +87,6 @@ jobs:
           cd /opt/Recommender-Live-Deploy
           ls -lrt
           python3 test/test.py \
-              --import-build-config opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_CONFIG }} \
-              --export-test-results opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
-          cat opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
+              --import-build-config /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_CONFIG }} \
+              --export-test-results /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
+          cat /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEST_RESULTS }}
