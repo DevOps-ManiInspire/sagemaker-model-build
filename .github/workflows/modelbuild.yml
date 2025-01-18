@@ -6,7 +6,13 @@ on:
       - main
 
 env:
+  SAGEMAKER_PROJECT_NAME: githubProj
   SAGEMAKER_PROJECT_NAME_ID: p-1succyhht0ye
+  SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
+  AWS_REGION: us-east-1
+  AWS_CREDENTIAL: 
+  ARTIFACT_BUCKET: sagemaker-project-p-98gc52dh9vwy
+  
 
 jobs:
   SagemakerModelBuild:
@@ -26,4 +32,22 @@ jobs:
           mv ./ModelBuild-GitHubPipeline/* /opt/Recommender-Live
           pip3 install --upgrade --force-reinstall --target $HOME/.local/$SAGEMAKER_PROJECT_NAME_ID . "awscli>1.20.30"
           ls -lrt $HOME/.local/
-      
+          
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ AWS_REGION }} # Replace with your AWS Region
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # Add in repository secrets
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # Add in repository secrets
+          
+      - name: Verify AWS Configuration
+        run: aws sts get-caller-identity
+
+      - name: Update and Run Sagemaker Pipeline
+        run: |
+          export PATH="$HOME/.local/$SAGEMAKER_PROJECT_NAME_ID/bin:$PATH"
+          export PYTHONPATH="$HOME/.local/$SAGEMAKER_PROJECT_NAME_ID:$PYTHONPATH"
+          run-pipeline --module-name pipelines.abalone.pipeline \
+          --role-arn ${SAGEMAKER_PIPELINE_ROLE_ARN} \
+          --tags "[{\\"Key\\":\\"sagemaker:project-name\\", \\"Value\\":\\"${SAGEMAKER_PROJECT_NAME}\\"}, {\\"Key\\":\\"sagemaker:project-id\\", \\"Value\\":\\"${SAGEMAKER_PROJECT_ID}\\"}]" \
+          --kwargs "{\\"region\\":\\"${AWS_REGION}\\",\\"role\\":\\"${SAGEMAKER_PIPELINE_ROLE_ARN}\\",\\"default_bucket\\":\\"${ARTIFACT_BUCKET}\\",\\"pipeline_name\\":\\"${SAGEMAKER_PROJECT_NAME_ID}\\",\\"model_package_group_name\\":\\"${SAGEMAKER_PROJECT_NAME_ID}\\",\\"base_job_prefix\\":\\"${SAGEMAKER_PROJECT_NAME_ID}\\"}"
