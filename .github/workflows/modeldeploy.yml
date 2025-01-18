@@ -59,6 +59,7 @@ jobs:
 
       - name: Package CloudFormation Template
         run: |
+          cd /opt/Recommender-Live-Deploy
           export PATH="$HOME/.local/bin:$PATH"
           aws cloudformation package --template endpoint-config-template.yml \
                                      --s3-bucket "${{ env.ARTIFACT_BUCKET }}" \
