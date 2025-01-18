@@ -74,8 +74,8 @@ jobs:
           template: /opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_NAME }}
           capabilities: CAPABILITY_NAMED_IAM
           parameter-overrides: |
-            file://${{ env.EXPORT_TEMPLATE_STAGING_PARAMS }}
+            file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_PARAMS }}
           tags: |
-            file://${{ env.EXPORT_TEMPLATE_STAGING_TAGS }}
+            file:///opt/Recommender-Live-Deploy/${{ env.EXPORT_TEMPLATE_STAGING_TAGS }}
           no-fail-on-empty-changeset: '1'
           timeout-in-minutes: 30
