@@ -28,7 +28,7 @@ jobs:
       - name: Build and Install
         run: |
           mkdir /opt/Recommender-Live
-          mv ./ModelBuild-GitHubPipeline/* /opt/Recommender-Live
+          mv ModelBuild-GitHubPipeline/* /opt/Recommender-Live
           pip3 install --upgrade --force-reinstall --target $HOME/.local/$SAGEMAKER_PROJECT_NAME_ID . "awscli>1.20.30"
           ls -lrt $HOME/.local/
           
