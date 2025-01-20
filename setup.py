@@ -1,16 +1,4 @@
-import os
 import setuptools
-
-
-about = {}
-here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, "pipelines", "__version__.py")) as f:
-    exec(f.read(), about)
-
-
-with open("README.md", "r") as f:
-    readme = f.read()
-
 
 required_packages = ["sagemaker==2.93.0"]
 extras = {
@@ -26,16 +14,17 @@ extras = {
         "tox",
     ]
 }
+
 setuptools.setup(
-    name=about["__title__"],
-    description=about["__description__"],
-    version=about["__version__"],
-    author=about["__author__"],
-    author_email=["__author_email__"],
+    name="pipelines",
+    description="pipelines - template package",
+    version="0.0.1",
+    author="<Your Name>",
+    author_email="<your-email@python.org>",
     long_description=readme,
     long_description_content_type="text/markdown",
-    url=about["__url__"],
-    license=about["__license__"],
+    url="<https://your-website>",
+    license="Apache 2.0",
     packages=setuptools.find_packages(),
     include_package_data=True,
     python_requires=">=3.6",
