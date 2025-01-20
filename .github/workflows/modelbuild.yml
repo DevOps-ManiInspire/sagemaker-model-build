@@ -3,14 +3,14 @@ name: Sagemaker Build Pipeline
 on:
   push:
     branches:
-      - main-build
+      - main
 
 env:
-  SAGEMAKER_PROJECT_NAME: githubProj
-  SAGEMAKER_PROJECT_NAME_ID: p-1succyhht0ye
+  SAGEMAKER_PROJECT_NAME: sagemaker-antelope
+  SAGEMAKER_PROJECT_NAME_ID: p-o2t6rv8magzu
   SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
   AWS_REGION: us-east-1
-  ARTIFACT_BUCKET: sagemaker-project-p-98gc52dh9vwy
+  ARTIFACT_BUCKET: sagemaker-project-p-o2t6rv8magzu
   
 
 jobs:
