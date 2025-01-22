@@ -11,7 +11,7 @@ env:
   SAGEMAKER_PIPELINE_ROLE_ARN: arn:aws:iam::058264373029:role/service-role/AmazonSageMakerServiceCatalogProductsExecutionRole
   AWS_REGION: us-east-1
   ARTIFACT_BUCKET: sagemaker-project-p-o2t6rv8magzu
-  env: live
+  envName: live
   
 
 jobs:
@@ -28,8 +28,8 @@ jobs:
           sparse-checkout-cone-mode: true # Recommended for better performance
       - name: Build and Install
         run: |
-          mkdir /opt/Recommender-${env}
-          mv ./ModelBuild-GitHubPipeline/* /opt/Recommender-${env}
+          mkdir /opt/Recommender-${{ env.envName }}
+          mv ./ModelBuild-GitHubPipeline/* /opt/Recommender-${{ env.envName }}
           pip3 install --upgrade --force-reinstall --target $HOME/.local/$SAGEMAKER_PROJECT_NAME_ID . "awscli>1.20.30"
           ls -lrt $HOME/.local/
           
@@ -48,7 +48,7 @@ jobs:
           export PATH="$HOME/.local/${SAGEMAKER_PROJECT_NAME_ID}/bin:$PATH"
           export PYTHONPATH="$HOME/.local/${SAGEMAKER_PROJECT_NAME_ID}:$PYTHONPATH"
 
-          cd /opt/Recommender-${env}
+          cd /opt/Recommender-${{ env.envName }}
           
           run-pipeline --module-name pipelines.abalone.pipeline \
             --role-arn "${SAGEMAKER_PIPELINE_ROLE_ARN}" \
