@@ -3,7 +3,7 @@ name: Sagemaker Deploy Pipeline
 on:
   push:
     branches:
-      - main
+      - main-build
 
 env:
   BASE_PATH: /opt/Recommender-Live-Deploy
