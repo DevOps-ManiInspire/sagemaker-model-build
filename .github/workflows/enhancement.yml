@@ -27,15 +27,16 @@ env:
 jobs:
     EnhancementTestArea-:
         runs-on: ubuntu-latest
-      slackNotify-engineering-begin:
-        if: contains(github.event.head_commit.message, 'AMGEN-20')
-        uses: Team-Inspire/inspire-web/.github/workflows/send-Slack-notification.yml@main
-        secrets: inherit
-        with:
-            channel-name: "engineering"
-            text: "Deployment to *ag-test.inspire.com* is now in progress"
       
         steps:
+          - name: Send Slack Notification - Engineering Begin
+            if: contains(github.event.head_commit.message, 'AMGEN-20')
+            uses: Team-Inspire/inspire-web/.github/workflows/send-Slack-notification.yml@main
+            with:
+              channel-name: "monitoring"
+              text: "Deployment to *Sagemaker build* is now in progress"
+              secrets: inherit
+              
           - name: Logging
             continue-on-error: true
             run: echo $JSON
