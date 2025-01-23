@@ -12,10 +12,17 @@ on:
             required: true
             type: string
             default: psoriasis-default
+        env:
+          required: true
+          type: choice
+          options:
+            - dev
+            - test
+            - live
 
 env:
     AWS_REGION: ${{ vars.AWS_REGION }}
-    COMMUNITY: envcommunit-${{ inputs.community }}
+    COMMUNITY: envcommunit-${{ inputs.community }}-${{ env.AWS_REGION }}
 
 jobs:
     EnhancementTestArea:
