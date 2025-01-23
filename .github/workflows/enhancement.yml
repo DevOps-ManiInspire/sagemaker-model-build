@@ -5,12 +5,13 @@ on:
   push:
     branches:
       - main-xxxx  # Can be set during golive
-      
+
   workflow_dispatch:
     inputs:
         community:
             required: true
             type: string
+            default: psoriasis-default
 
 env:
     AWS_REGION: ${{ vars.AWS_REGION }}
