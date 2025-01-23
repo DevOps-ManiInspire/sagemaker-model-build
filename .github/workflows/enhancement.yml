@@ -5,8 +5,13 @@ on:
     branches:
       - main
 
+  workflow_call:
+    inputs:
+        community:
+            required: true
+            type: string
+
 env:
-    community: psoriasis
     AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
