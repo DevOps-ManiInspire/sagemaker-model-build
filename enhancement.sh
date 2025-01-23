@@ -12,4 +12,5 @@ export PYTHONPATH="$HOME/.local/${SAGEMAKER_PROJECT_NAME_ID}:$PYTHONPATH"
 echo "%%%%%%"
 
 echo "Community : $community"
+echo "AWS Region selected is : $AWS_REGION"
 echo "%%%%%%"
