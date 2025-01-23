@@ -13,4 +13,5 @@ echo "%%%%%%"
 
 echo "Community : $COMMUNITY"
 echo "AWS Region selected is : $AWS_REGION"
+echo $env
 echo "%%%%%%"
