@@ -25,4 +25,4 @@ jobs:
             run: |
                 chmod +x enhancement.sh
                 ls -lrt 
-                ./enhancement.sh ${{ env.AWS_REGION }}
+                ./enhancement.sh ${{ vars.AWS_REGION }}
