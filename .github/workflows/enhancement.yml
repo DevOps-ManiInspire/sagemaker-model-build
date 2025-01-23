@@ -1,0 +1,16 @@
+name: Enhancement Area
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    EnhancementTestArea:
+        runs-on: ubuntu-latest
+    
+        steps:
+            - name: ShellScriptExecution
+              run: |
+                chmod +x enhancement.sh
+                ls -lrt 

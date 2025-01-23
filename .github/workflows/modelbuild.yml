@@ -3,7 +3,7 @@ name: Sagemaker Build Pipeline
 on:
   push:
     branches:
-      - main
+      - main-xxx
 
 env:
   SAGEMAKER_PROJECT_NAME: sagemaker-antelope
