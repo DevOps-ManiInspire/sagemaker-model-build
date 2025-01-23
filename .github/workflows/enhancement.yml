@@ -27,8 +27,14 @@ env:
 jobs:
     EnhancementTestArea-:
         runs-on: ubuntu-latest
-    
+      
         steps:
+          - name: Logging
+            continue-on-error: true
+            run: echo $JSON
+            env:
+                JSON: ${{ toJSON(github) }}
+
           - name: SagemakerModelBuild-${{ inputs.community }}
             uses: actions/checkout@v4
             with:
