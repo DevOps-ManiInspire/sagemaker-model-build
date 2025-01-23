@@ -28,4 +28,4 @@ jobs:
                 ls -lrt 
                 community=${{ inputs.community }}
                 echo ${{ inputs.community }}
-                ./enhancement.sh ${{ vars.AWS_REGION }} ${{ inputs.community }}
+                ./enhancement.sh ${{ vars.AWS_REGION }} $community
