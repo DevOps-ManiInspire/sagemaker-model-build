@@ -15,7 +15,7 @@ on:
 
 env:
     AWS_REGION: ${{ vars.AWS_REGION }}
-    COMMUNITY: ${{ inputs.community }}
+    COMMUNITY: envcommunit-${{ inputs.community }}
 
 jobs:
     EnhancementTestArea:
