@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+    community: psoriasis
+
 jobs:
     EnhancementTestArea:
         runs-on: ubuntu-latest
