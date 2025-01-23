@@ -16,9 +16,8 @@ on:
           required: true
           type: choice
           options:
-            - dev
-            - test
-            - live
+            - Test
+            - Live
 
 env:
     AWS_REGION: ${{ vars.AWS_REGION }}
