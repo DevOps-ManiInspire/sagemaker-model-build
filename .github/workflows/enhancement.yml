@@ -26,4 +26,4 @@ jobs:
           - name: ShellScriptExecution
             run: |
                 chmod +x enhancement.sh
-                ./enhancement.sh ${{ vars.AWS_REGION }}
+                ./enhancement.sh
