@@ -24,4 +24,4 @@ jobs:
             run: |
                 chmod +x enhancement.sh
                 ls -lrt 
-                ./enhancement.sh
+                ./enhancement.sh ${{ secrets.AWS_REGION }}
