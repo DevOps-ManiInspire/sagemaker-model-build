@@ -27,7 +27,7 @@ env:
 jobs:
   
    Slack-Notify-Build:
-      uses: Team-Inspire/inspire-web/.github/workflows/send-Slack-notification.yml@main
+      uses: DevOps-ManiInspire/sagemaker-model-build/.github/workflows/send-Slack-notification.yml@main
       secrets: inherit
       with:
         channel-name: "monitoring"
