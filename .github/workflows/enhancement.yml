@@ -25,7 +25,15 @@ env:
     env: ${{ inputs.env }}
 
 jobs:
-    EnhancementTestArea-:
+  
+   Slack-Notify-Build:
+      uses: Team-Inspire/inspire-web/.github/workflows/send-Slack-notification.yml@main
+      secrets: inherit
+      with:
+        channel-name: "monitoring"
+        text: "Deployment to *Sagemaker build* is now in progress"
+
+   EnhancementTestArea:
         runs-on: ubuntu-latest
       
         steps:
@@ -36,7 +44,7 @@ jobs:
               channel-name: "monitoring"
               text: "Deployment to *Sagemaker build* is now in progress"
               secrets: inherit
-              
+
           - name: Logging
             continue-on-error: true
             run: echo $JSON
