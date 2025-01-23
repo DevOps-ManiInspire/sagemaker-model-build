@@ -7,6 +7,7 @@ on:
 
 env:
     community: psoriasis
+    AWS_REGION: ${{ vars.AWS_REGION }}
 
 jobs:
     EnhancementTestArea:
@@ -21,8 +22,6 @@ jobs:
                 sparse-checkout-cone-mode: true # Recommended for better performance
 
           - name: ShellScriptExecution
-            env:
-                AWS_REGION: ${{ vars.AWS_REGION }}
             run: |
                 chmod +x enhancement.sh
                 ls -lrt 
