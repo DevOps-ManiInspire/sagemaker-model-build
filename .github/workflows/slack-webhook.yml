@@ -1,0 +1,82 @@
+name: Send Slack notification
+on:
+  workflow_call:
+    inputs:
+      # send message to a specific webhook URL. Note that webhook URLs as GH Secrets can't be passed to reusable workflows,
+      # so in those cases, use the channelName option that is used to look up webhook URL secrets in the getWebhookURL step
+      webhook-URL:
+        type: string
+      # text to send to Slack
+      channel-name:
+        type: string
+      # text to send to Slack
+      text:
+        type: string
+      # markdown text to be sent via blocks to Slack
+      markdown:
+        type: string
+jobs:
+  send-Slack-markdown:
+    if: inputs.markdown != ''
+    runs-on: ubuntu-latest
+    steps:
+    - name: get webhook URL
+      id: getWebhookURL
+      run: |
+        webhookURL=${{ inputs.webhook-URL }};
+        if [ -z "$webhookURL" ]; then 
+          if [ "${{ inputs.channel-name }}" == "monitoring" ]; then
+            webhookURL=${{ secrets.SLACK_MONITORING_WEBHOOK_URL_MANI }};
+          else 
+            webhookURL=${{ secrets.SLACK_MONITORING_WEBHOOK_URL_MANI }};
+          fi
+        fi
+        echo "webhookURL=$webhookURL" >> $GITHUB_OUTPUT
+    - name: Send text and markdown Slack notification to Slack webhook URL
+      id: slack-text-and-markdown
+      uses: slackapi/slack-github-action@v1.23.0
+      with:
+          payload: |
+            {
+              "attachments": [{
+                  "blocks": [
+                    {
+                      "type": "section",
+                      "text": {
+                        "type": "mrkdwn",
+                        "text": "${{ inputs.markdown }}" 
+                      }  
+                    }
+                  ]
+              }]
+            }
+      env:
+          SLACK_WEBHOOK_URL: ${{ steps.getWebhookURL.outputs.webhookURL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+  send-Slack-text:
+    if: inputs.markdown == ''
+    runs-on: ubuntu-latest
+    steps:
+    - name: get webhook URL
+      id: getWebhookURL
+      run: |
+        webhookURL=${{ inputs.webhook-URL }};
+        if [ -z "$webhookURL" ]; then 
+          if [ "${{ inputs.channel-name }}" == "monitoring" ]; then
+            webhookURL=${{ secrets.SLACK_MONITORING_WEBHOOK_URL_MANI }};
+          else 
+            webhookURL=${{ secrets.SLACK_MONITORING_WEBHOOK_URL_MANI }};
+          fi
+        fi
+        echo "webhookURL=$webhookURL" >> $GITHUB_OUTPUT
+    - name: Send text-based Slack notification to Slack webhook URL
+      id: slack-text
+      uses: slackapi/slack-github-action@v1.23.0
+      with:
+          payload: |
+            {
+             "text": "${{ inputs.text }}" 
+            }
+      env:
+          SLACK_WEBHOOK_URL: ${{ steps.getWebhookURL.outputs.webhookURL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
