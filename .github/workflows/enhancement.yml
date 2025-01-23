@@ -1,7 +1,7 @@
 name: Enhancement Area
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
         community:
             required: true
