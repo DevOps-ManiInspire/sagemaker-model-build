@@ -25,11 +25,11 @@ env:
     env: ${{ inputs.env }}
 
 jobs:
-    EnhancementTestArea:
+    EnhancementTestArea-:
         runs-on: ubuntu-latest
     
         steps:
-          - name: SagemakerModelBuild
+          - name: SagemakerModelBuild-${{ inputs.community }}
             uses: actions/checkout@v4
             with:
                 repository: DevOps-ManiInspire/sagemaker-model-build # Replace with the owner/repository name
