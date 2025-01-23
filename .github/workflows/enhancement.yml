@@ -1,6 +1,11 @@
 name: Enhancement Area
 
 on:
+
+  push:
+    branches:
+      - main-xxxx  # Can be set during golive
+      
   workflow_dispatch:
     inputs:
         community:
