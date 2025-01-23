@@ -31,4 +31,4 @@ jobs:
                 chmod +x enhancement.sh
                 ls -lrt 
                 community=${{ inputs.community }}
-                ./enhancement.sh ${{ vars.AWS_REGION }}
+                ./enhancement.sh ${{ vars.AWS_REGION }} ${community}
