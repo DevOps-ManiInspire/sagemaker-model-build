@@ -22,7 +22,7 @@ jobs:
 
           - name: ShellScriptExecution
             env:
-                AWS_REGION: ${{ var.AWS_REGION }}
+                AWS_REGION: ${{ vars.AWS_REGION }}
             run: |
                 chmod +x enhancement.sh
                 ls -lrt 
