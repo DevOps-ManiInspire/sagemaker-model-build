@@ -1,10 +1,6 @@
 name: Enhancement Area
 
 on:
-  push:
-    branches:
-      - main
-
   workflow_call:
     inputs:
         community:
