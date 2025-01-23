@@ -10,7 +10,14 @@ jobs:
         runs-on: ubuntu-latest
     
         steps:
-            - name: ShellScriptExecution
-              run: |
+          - name: SagemakerModelBuild
+            uses: actions/checkout@v4
+            with:
+                repository: DevOps-ManiInspire/sagemaker-model-build # Replace with the owner/repository name
+                fetch-depth: 0 # Fetch all history for proper sparse checkout
+                sparse-checkout-cone-mode: true # Recommended for better performance
+
+          - name: ShellScriptExecution
+            run: |
                 chmod +x enhancement.sh
                 ls -lrt 
