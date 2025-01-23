@@ -31,7 +31,7 @@ jobs:
       secrets: inherit
       with:
         channel-name: "monitoring"
-        text: "> Deployment Initiated for *${{ inputs.community }}* community.:white_tick_mark:"
+        text: "> Deployment Initiated for *${{ inputs.community }}* community. :white_check_mark:"
 
    EnhancementTestArea:
         runs-on: ubuntu-latest
